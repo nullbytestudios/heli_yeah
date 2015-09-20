@@ -7,6 +7,8 @@
  * @param Object Play
  */
 module.exports = function(game, Play) {
+    require('./preloader.js')(game, Play);
+    
     Play.Launch = function(game) {};
     
     Play.Launch.prototype = {
@@ -30,26 +32,114 @@ module.exports = function(game, Play) {
         }
     }
 }
-},{}],2:[function(require,module,exports){
+},{"./preloader.js":4}],2:[function(require,module,exports){
 /**
- * Displays the preloader and enters the Main Menu.
+ * Displays the logos at the start of the game and enters the Main Menu.
  * 
  * @param Phaser game
  * @param Object Play
  */
 module.exports = function(game, Play) {
+    require('./main_menu.js')(game, Play);
+    
+    Play.LogosIntro = function(game) {
+        this.is_ready = false;
+        this.timer = null;
+    };
+    
+    Play.LogosIntro.prototype = {
+        preload: function() {
+            // Set a main menu state
+            this.state.add('main_menu', Play.MainMenu);
+            
+            // Use a black background
+            game.backgroundColor = 0x000000;
+            
+            // Center the logo to the middle of the screen
+            var nullbyte = this.add.sprite(game.width/2, game.height/2, 'nullbyte_studios');
+            nullbyte.anchor.setTo(0.5);
+            
+            // Create a timer for how long to play the logo
+            this.timer = game.time.create();
+            this.timer.add(3000, this.endTimer, this);
+            
+            // Load additional assets for the menu
+            this.load.audio('main_menu_music', ['assets/audio/music/main_menu.mp3']);
+            this.load.image('main_logo', 'assets/sprites/logos/logo.png');
+        },
+        
+        create: function() {
+            // Start the logo timer
+            this.timer.start();
+        },
+        
+        update: function() {
+            // Wait for the audio to finish loading before continuing
+            if (this.cache.isSoundDecoded('main_menu_music') && this.is_ready === true) {
+                this.state.start('main_menu');
+            }
+        },
+        
+        endTimer: function() {
+            this.is_ready = true;
+        }
+    }
+}
+},{"./main_menu.js":3}],3:[function(require,module,exports){
+/**
+ * Displays the main menu.
+ * 
+ * @param Phaser game
+ * @param Object Play
+ */
+module.exports = function(game, Play) {
+    Play.MainMenu = function(game) {
+        this.music = null;
+    };
+    
+    Play.MainMenu.prototype = {
+        preload: function() {
+            // Set the background
+            this.stage.backgroundColor = 0xd2f8ff;
+            
+            // Center the logo to the top of the screen
+            var logo = this.add.sprite(game.width/2, 40, 'main_logo');
+            logo.anchor.setTo(0.5, 0);
+        },
+        
+        create: function() {
+            // Set the music to loop at half volume
+            this.music = this.add.audio('main_menu_music', 0.5, true);
+            this.music.play();
+        }
+    }
+}
+},{}],4:[function(require,module,exports){
+/**
+ * Displays the preloader and heads into the logo intro.
+ * 
+ * @param Phaser game
+ * @param Object Play
+ */
+module.exports = function(game, Play) {
+    require('./logos_intro.js')(game, Play);
+    
     Play.Preloader = function(game) {
         this.background = null;
         this.loading_bar = null;
-        this.is_ready = false;
     };
     
     Play.Preloader.prototype = {
         preload: function() {
+            // Set a main menu state
+            this.state.add('logos_intro', Play.LogosIntro);
+            
             // Set the background and loading bar available from boot
             this.background = this.add.sprite(0, 0, 'preloader_bg');
-            // Center the loading bar, knowing it's image width is 432px (432/2 = 216)
-            this.loading_bar = this.add.sprite(game.width/2 - 216, game.height/2, 'preloader_bar');
+            
+            // Place the loading bar just below the center
+            this.loading_bar = this.add.sprite(game.width/2, game.height/2 + 20, 'preloader_bar');
+            this.loading_bar.anchor.setTo(0.5);
             
             // Set the loading bar as the preloading sprite, automatically animating it as content is loaded
             this.load.setPreloadSprite(this.loading_bar);
@@ -61,57 +151,22 @@ module.exports = function(game, Play) {
         create: function() {
             // Ensure the loading bar is cropped as content is loaded (i.e. the "animation" of the bar increasing)
             this.loading_bar.cropEnabled = true;
-        },
-        
-        update: function() {
             
+            // Head to the logo intro
+            this.state.start('logos_intro');
         }
     }
 }
-},{}],3:[function(require,module,exports){
+},{"./logos_intro.js":2}],5:[function(require,module,exports){
 window.onload = function()
 {
-    var game = new Phaser.Game(960, 640, Phaser.AUTO, 'game'/*, { preload: preload, create: create, update: update, render: render}*/);
+    var game = new Phaser.Game(960, 640, Phaser.AUTO, 'game');
     var Play = {};
     
     require('./boot.js')(game, Play);
-    require('./preloader.js')(game, Play);
-    //require('./levels/level1.js')(game, Play);
     
     game.state.add('launch', Play.Launch);
-    //game.state.add('preloader', Play.Preloader);
-    
     game.state.start('launch');
-/*
-    function preload()
-    {
-        //game.load.atlasJSONHash('helicopter', 'assets/heli/helicopter.png', 'assets/heli/helicopter.json');
-        game.state.start('launch');
-        game.stage.backgroundColor = 0xffffff;
-        game.load.image('helicopter', 'assets/sprites/heli/coastguard.png');
-    }
-
-    function create()
-    {
-        var heli = game.add.sprite(50, 50, 'helicopter');
-        
-        //var heli = game.add.sprite(50, 50, 'helicopter');
-        //heli.scale.setTo(0.9, 0.9);
-
-        //var fly = heli.animations.add('fly');
-        //heli.animations.play('fly', 30, true);
-    }
-
-    function update()
-    {
-
-    }
-
-    function render()
-    {
-
-    }
-    */
 };
 
-},{"./boot.js":1,"./preloader.js":2}]},{},[3]);
+},{"./boot.js":1}]},{},[5]);

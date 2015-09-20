@@ -6,6 +6,8 @@
  * @param Object Play
  */
 module.exports = function(game, Play) {
+    require('./preloader.js')(game, Play);
+    
     Play.Launch = function(game) {};
     
     Play.Launch.prototype = {
