@@ -1,0 +1,7 @@
+{
+    "level1": {
+        "player_start": {"x": 50, "y": 50},
+        "helicopter_start": {"x": 100, "y": 50},
+        "next_level": "level2"
+    }
+}

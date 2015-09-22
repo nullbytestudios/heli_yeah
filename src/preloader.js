@@ -21,7 +21,7 @@ module.exports = function(game, Play) {
             this.background = this.add.sprite(0, 0, 'preloader_bg');
             
             // Place the loading bar just below the center
-            this.loading_bar = this.add.sprite(game.width/2, game.height/2 + 20, 'preloader_bar');
+            this.loading_bar = this.add.sprite(game.world.centerX, game.world.centerY + 20, 'preloader_bar');
             this.loading_bar.anchor.setTo(0.5);
             
             // Set the loading bar as the preloading sprite, automatically animating it as content is loaded
@@ -38,5 +38,5 @@ module.exports = function(game, Play) {
             // Head to the logo intro
             this.state.start('logos_intro');
         }
-    }
-}
+    };
+};

@@ -29,5 +29,5 @@ module.exports = function(game, Play) {
             // Start the preloader
             this.state.start('preloader');
         }
-    }
-}
+    };
+};

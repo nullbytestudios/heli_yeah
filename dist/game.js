@@ -30,9 +30,164 @@ module.exports = function(game, Play) {
             // Start the preloader
             this.state.start('preloader');
         }
-    }
-}
-},{"./preloader.js":4}],2:[function(require,module,exports){
+    };
+};
+},{"./preloader.js":6}],2:[function(require,module,exports){
+/**
+ * Player control object
+ * 
+ * @param Phaser game
+ * @param Sprite sprite
+ */
+module.exports = function (game) {
+    
+    var Player = function(x, y) {
+        Phaser.Sprite.call(this, game, x, y, 'player');
+
+        // Set player directions
+        this.directions = {
+            UP: 'up',
+            DOWN: 'down',
+            LEFT: 'left',
+            RIGHT: 'right'
+        };
+        this.actions = {
+            IDLE: 'idle',
+            RUNNING: 'running',
+            JUMPING: 'jumping'
+        };
+        
+        this.is_facing = this.directions.RIGHT;
+        this.action = this.actions.IDLE;
+        
+        // Set event handlers
+        this.keys = game.input.keyboard.createCursorKeys();
+    };
+    
+    Player.prototype = Object.create(Phaser.Sprite.prototype);
+    Player.prototype.constructor = Player;
+    
+    Player.prototype.update = function() {
+        if (this.keys.right.isDown) {
+            this.moveRight();
+        } else if (this.keys.left.isDown) {
+            this.moveLeft();
+        }
+        
+        if (this.keys.up.isDown) {
+            this.moveUp();
+        } else if (this.keys.down.isDown) {
+            this.moveDown();
+        }
+    };
+    
+    Player.prototype.moveUp = function() {
+
+    };
+        
+    Player.prototype.moveDown = function() {
+            
+    };
+        
+    Player.prototype.moveLeft = function() {
+        this.is_facing = this.directions.LEFT;
+        this.x--;
+    };
+        
+    Player.prototype.moveRight = function() {
+        this.is_facing = this.directions.RIGHT;
+        this.x++;
+    };
+    
+    return Player;
+};
+},{}],3:[function(require,module,exports){
+/**
+ * Plays the game.
+ * 
+ * @param Phaser game
+ * @param Object Play
+ */
+module.exports = function(game, Play) {
+    var Player = require('./entities/player.js')(game);
+    
+    Play.GameManager = function(game) {
+        this.levels = {};
+        this.player = null;
+        this.heli_frame_back
+    };
+    
+    Play.GameManager.prototype = {
+        preload: function() {
+            // Remove anti-aliasing
+            this.stage.smoothed = false;
+            
+            this.load.text('levels', 'assets/data/levels.json');
+            this.load.image('player', 'assets/sprites/entities/player/default.png');
+            this.load.atlasJSONHash('helicopter', 'assets/sprites/entities/heli/helicopter.png', 'assets/sprites/entities/heli/helicopter.json');
+        },
+        
+        create: function() {
+            // Load level data
+            this.levels = JSON.parse(game.cache.getText('levels'));
+            
+            // Create the player
+            this.player = new Player(this.levels.level1.player_start.x, this.levels.level1.player_start.y);
+            this.player.anchor.setTo(0.5, 1);
+            game.add.existing(this.player);
+            
+            this.player = new Player(this.levels.level1.player_start.x, 640);
+            this.player.anchor.setTo(0.5, 1);
+            this.player.scale.setTo(2);
+            game.add.existing(this.player);
+            
+            
+            
+            
+            // Add helicopter (example)
+            this.heli_frame_back = game.add.sprite(100, 100, 'helicopter', 'heli_frame_back');
+            var heli_frame = game.add.sprite(-73, -15, 'helicopter', 'heli_frame');
+            var heli_rear_blade = game.add.sprite(-62, 12, 'helicopter', 'heli_rear_blade');
+            var heli_top_blade = game.add.sprite(-59, -8, 'helicopter', 'heli_top_blade');
+            
+            this.heli_frame_back.addChild(heli_frame);
+            this.heli_frame_back.addChild(heli_rear_blade);
+            this.heli_frame_back.addChild(heli_top_blade);
+            
+            // Helicopter 2
+            var heli_frame_back = game.add.sprite(300, 100, 'helicopter', 'heli_frame_back');
+            var heli_frame = game.add.sprite(-73, -15, 'helicopter', 'heli_frame');
+            var heli_rear_blade = game.add.sprite(-62, 12, 'helicopter', 'heli_rear_blade_spin');
+            var heli_top_blade = game.add.sprite(-59, -8, 'helicopter', 'heli_top_blade_spin1');
+            heli_top_blade.animations.add('top_blade', Phaser.Animation.generateFrameNames('heli_top_blade_spin', 1, 3), 30, true, false);
+            heli_top_blade.animations.play('top_blade');
+            
+            heli_frame_back.addChild(heli_frame);
+            heli_frame_back.addChild(heli_rear_blade);
+            heli_frame_back.addChild(heli_top_blade);
+            
+            // Helicopter 3
+            var heli_frame_back = game.add.sprite(300, 550, 'helicopter', 'heli_frame_back');
+            var heli_frame = game.add.sprite(-73, -15, 'helicopter', 'heli_frame');
+            var heli_rear_blade = game.add.sprite(-62, 12, 'helicopter', 'heli_rear_blade_spin');
+            var heli_top_blade = game.add.sprite(-59, -8, 'helicopter', 'heli_top_blade_spin1');
+            heli_top_blade.animations.add('top_blade', Phaser.Animation.generateFrameNames('heli_top_blade_spin', 1, 3), 40, true, false);
+            heli_top_blade.animations.play('top_blade');
+            
+            heli_frame_back.addChild(heli_frame);
+            heli_frame_back.addChild(heli_rear_blade);
+            heli_frame_back.addChild(heli_top_blade);
+            heli_frame_back.scale.setTo(2);
+        },
+        
+        update: function() {
+            if (game.input.keyboard.createCursorKeys().right.isDown) {
+                this.heli_frame_back.x++;
+            }
+        }
+    };
+};
+},{"./entities/player.js":2}],4:[function(require,module,exports){
 /**
  * Displays the logos at the start of the game and enters the Main Menu.
  * 
@@ -56,16 +211,16 @@ module.exports = function(game, Play) {
             game.backgroundColor = 0x000000;
             
             // Center the logo to the middle of the screen
-            var nullbyte = this.add.sprite(game.width/2, game.height/2, 'nullbyte_studios');
-            nullbyte.anchor.setTo(0.5);
+            this.add.sprite(game.world.centerX, game.world.centerY, 'nullbyte_studios').anchor.setTo(0.5);
             
             // Create a timer for how long to play the logo
             this.timer = game.time.create();
-            this.timer.add(3000, this.endTimer, this);
+            this.timer.add(1000, this.endTimer, this);
             
             // Load additional assets for the menu
             this.load.audio('main_menu_music', ['assets/audio/music/main_menu.mp3']);
             this.load.image('main_logo', 'assets/sprites/logos/logo.png');
+            this.load.atlas('main_menu_play_button', 'assets/sprites/buttons/play.png', 'assets/sprites/buttons/play.json');
         },
         
         create: function() {
@@ -83,9 +238,9 @@ module.exports = function(game, Play) {
         endTimer: function() {
             this.is_ready = true;
         }
-    }
-}
-},{"./main_menu.js":3}],3:[function(require,module,exports){
+    };
+};
+},{"./main_menu.js":5}],5:[function(require,module,exports){
 /**
  * Displays the main menu.
  * 
@@ -93,28 +248,41 @@ module.exports = function(game, Play) {
  * @param Object Play
  */
 module.exports = function(game, Play) {
+    require('./game_manager.js')(game, Play);
+    
     Play.MainMenu = function(game) {
         this.music = null;
     };
     
     Play.MainMenu.prototype = {
         preload: function() {
+            // Set a level manager state
+            this.state.add('game_manager', Play.GameManager);
+            
             // Set the background
             this.stage.backgroundColor = 0xd2f8ff;
             
             // Center the logo to the top of the screen
-            var logo = this.add.sprite(game.width/2, 40, 'main_logo');
-            logo.anchor.setTo(0.5, 0);
+            this.add.sprite(game.world.centerX, 40, 'main_logo').anchor.setTo(0.5, 0);
         },
         
         create: function() {
             // Set the music to loop at half volume
-            this.music = this.add.audio('main_menu_music', 0.5, true);
-            this.music.play();
+            this.music = this.add.audio('main_menu_music', 0.5, true).play();
+            
+            this.add.button(game.world.centerX, game.world.centerY, 'main_menu_play_button', this.start, this, "hover", "up", "down", "hover")
+                    .anchor.setTo(0.5);
+        },
+        
+        start: function() {
+            this.music.stop();
+            
+            // Start up the game
+            this.state.start('game_manager');
         }
-    }
-}
-},{}],4:[function(require,module,exports){
+    };
+};
+},{"./game_manager.js":3}],6:[function(require,module,exports){
 /**
  * Displays the preloader and heads into the logo intro.
  * 
@@ -138,7 +306,7 @@ module.exports = function(game, Play) {
             this.background = this.add.sprite(0, 0, 'preloader_bg');
             
             // Place the loading bar just below the center
-            this.loading_bar = this.add.sprite(game.width/2, game.height/2 + 20, 'preloader_bar');
+            this.loading_bar = this.add.sprite(game.world.centerX, game.world.centerY + 20, 'preloader_bar');
             this.loading_bar.anchor.setTo(0.5);
             
             // Set the loading bar as the preloading sprite, automatically animating it as content is loaded
@@ -155,12 +323,12 @@ module.exports = function(game, Play) {
             // Head to the logo intro
             this.state.start('logos_intro');
         }
-    }
-}
-},{"./logos_intro.js":2}],5:[function(require,module,exports){
+    };
+};
+},{"./logos_intro.js":4}],7:[function(require,module,exports){
 window.onload = function()
 {
-    var game = new Phaser.Game(960, 640, Phaser.AUTO, 'game');
+    var game = new Phaser.Game(960, 640, Phaser.AUTO, 'game', null, false);
     var Play = {};
     
     require('./boot.js')(game, Play);
@@ -169,4 +337,4 @@ window.onload = function()
     game.state.start('launch');
 };
 
-},{"./boot.js":1}]},{},[5]);
+},{"./boot.js":1}]},{},[7]);
