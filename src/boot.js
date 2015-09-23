@@ -5,6 +5,8 @@
  * @param Phaser game
  * @param Object Play
  */
+;(function () {
+  'use strict';
 module.exports = function(game, Play) {
     require('./preloader.js')(game, Play);
     
@@ -31,3 +33,4 @@ module.exports = function(game, Play) {
         }
     };
 };
+})();

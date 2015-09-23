@@ -6,6 +6,8 @@
  * @param Phaser game
  * @param Object Play
  */
+;(function () {
+  'use strict';
 module.exports = function(game, Play) {
     require('./preloader.js')(game, Play);
     
@@ -32,6 +34,7 @@ module.exports = function(game, Play) {
         }
     };
 };
+})();
 },{"./preloader.js":6}],2:[function(require,module,exports){
 /**
  * Player control object
@@ -108,6 +111,8 @@ module.exports = function (game) {
  * @param Phaser game
  * @param Object Play
  */
+;(function () {
+  'use strict';
 module.exports = function(game, Play) {
     var Player = require('./entities/player.js')(game);
     
@@ -124,7 +129,7 @@ module.exports = function(game, Play) {
             
             this.load.text('levels', 'assets/data/levels.json');
             this.load.image('player', 'assets/sprites/entities/player/default.png');
-            this.load.atlasJSONHash('helicopter', 'assets/sprites/entities/heli/helicopter.png', 'assets/sprites/entities/heli/helicopter.json');
+            this.load.atlasJSONArray('heli_cg', 'assets/sprites/entities/heli/heli_cg.png', 'assets/sprites/entities/heli/heli_cg.json');
         },
         
         create: function() {
@@ -142,8 +147,17 @@ module.exports = function(game, Play) {
             game.add.existing(this.player);
             
             
-            
-            
+            var heli1 = game.add.sprite(100, 100, 'heli_cg', 'heli_cg_still');
+            heli1.scale.setTo(2);
+            var heli2 = game.add.sprite(100, 300, 'heli_cg', 'heli_cg_still');
+            heli2.scale.setTo(2);
+            heli2.animations.add('heli_cg_fly', Phaser.Animation.generateFrameNames('heli_cg_spin', 1, 4), 10, true, false);
+            heli2.animations.play('heli_cg_fly');
+            var heli3 = game.add.sprite(100, 500, 'heli_cg', 'heli_cg_still');
+            heli3.scale.setTo(2);
+            heli3.animations.add('heli_cg_fly', Phaser.Animation.generateFrameNames('heli_cg_spin', 1, 4), 40, true, false);
+            heli3.animations.play('heli_cg_fly');
+            /*
             // Add helicopter (example)
             this.heli_frame_back = game.add.sprite(100, 100, 'helicopter', 'heli_frame_back');
             var heli_frame = game.add.sprite(-73, -15, 'helicopter', 'heli_frame');
@@ -178,15 +192,15 @@ module.exports = function(game, Play) {
             heli_frame_back.addChild(heli_rear_blade);
             heli_frame_back.addChild(heli_top_blade);
             heli_frame_back.scale.setTo(2);
+            */
         },
         
         update: function() {
-            if (game.input.keyboard.createCursorKeys().right.isDown) {
-                this.heli_frame_back.x++;
-            }
+            
         }
     };
 };
+})();
 },{"./entities/player.js":2}],4:[function(require,module,exports){
 /**
  * Displays the logos at the start of the game and enters the Main Menu.
@@ -194,6 +208,8 @@ module.exports = function(game, Play) {
  * @param Phaser game
  * @param Object Play
  */
+;(function () {
+  'use strict';
 module.exports = function(game, Play) {
     require('./main_menu.js')(game, Play);
     
@@ -240,6 +256,7 @@ module.exports = function(game, Play) {
         }
     };
 };
+})();
 },{"./main_menu.js":5}],5:[function(require,module,exports){
 /**
  * Displays the main menu.
@@ -247,6 +264,8 @@ module.exports = function(game, Play) {
  * @param Phaser game
  * @param Object Play
  */
+;(function () {
+  'use strict';
 module.exports = function(game, Play) {
     require('./game_manager.js')(game, Play);
     
@@ -282,6 +301,7 @@ module.exports = function(game, Play) {
         }
     };
 };
+})();
 },{"./game_manager.js":3}],6:[function(require,module,exports){
 /**
  * Displays the preloader and heads into the logo intro.
@@ -289,6 +309,8 @@ module.exports = function(game, Play) {
  * @param Phaser game
  * @param Object Play
  */
+;(function () {
+  'use strict';
 module.exports = function(game, Play) {
     require('./logos_intro.js')(game, Play);
     
@@ -325,6 +347,7 @@ module.exports = function(game, Play) {
         }
     };
 };
+})();
 },{"./logos_intro.js":4}],7:[function(require,module,exports){
 window.onload = function()
 {

@@ -4,6 +4,8 @@
  * @param Phaser game
  * @param Object Play
  */
+;(function () {
+  'use strict';
 module.exports = function(game, Play) {
     require('./game_manager.js')(game, Play);
     
@@ -39,3 +41,4 @@ module.exports = function(game, Play) {
         }
     };
 };
+})();

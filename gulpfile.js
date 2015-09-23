@@ -20,10 +20,7 @@
     var window = gulp.src('./src/index.html')
       .pipe(gulp.dest('./dist/'));
       
-    var levels = gulp.src('./src/levels/*')
-      .pipe(gulp.dest('./dist/levels/'));
-
-    return merge(assets, engine, game, window, levels);
+    return merge(assets, engine, game, window);
   });
   
   gulp.task('default', ['build']);

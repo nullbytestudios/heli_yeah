@@ -4,6 +4,8 @@
  * @param Phaser game
  * @param Object Play
  */
+;(function () {
+  'use strict';
 module.exports = function(game, Play) {
     var Player = require('./entities/player.js')(game);
     
@@ -20,7 +22,7 @@ module.exports = function(game, Play) {
             
             this.load.text('levels', 'assets/data/levels.json');
             this.load.image('player', 'assets/sprites/entities/player/default.png');
-            this.load.atlasJSONHash('helicopter', 'assets/sprites/entities/heli/helicopter.png', 'assets/sprites/entities/heli/helicopter.json');
+            this.load.atlasJSONArray('heli_cg', 'assets/sprites/entities/heli/heli_cg.png', 'assets/sprites/entities/heli/heli_cg.json');
         },
         
         create: function() {
@@ -38,48 +40,21 @@ module.exports = function(game, Play) {
             game.add.existing(this.player);
             
             
-            
-            
-            // Add helicopter (example)
-            this.heli_frame_back = game.add.sprite(100, 100, 'helicopter', 'heli_frame_back');
-            var heli_frame = game.add.sprite(-73, -15, 'helicopter', 'heli_frame');
-            var heli_rear_blade = game.add.sprite(-62, 12, 'helicopter', 'heli_rear_blade');
-            var heli_top_blade = game.add.sprite(-59, -8, 'helicopter', 'heli_top_blade');
-            
-            this.heli_frame_back.addChild(heli_frame);
-            this.heli_frame_back.addChild(heli_rear_blade);
-            this.heli_frame_back.addChild(heli_top_blade);
-            
-            // Helicopter 2
-            var heli_frame_back = game.add.sprite(300, 100, 'helicopter', 'heli_frame_back');
-            var heli_frame = game.add.sprite(-73, -15, 'helicopter', 'heli_frame');
-            var heli_rear_blade = game.add.sprite(-62, 12, 'helicopter', 'heli_rear_blade_spin');
-            var heli_top_blade = game.add.sprite(-59, -8, 'helicopter', 'heli_top_blade_spin1');
-            heli_top_blade.animations.add('top_blade', Phaser.Animation.generateFrameNames('heli_top_blade_spin', 1, 3), 30, true, false);
-            heli_top_blade.animations.play('top_blade');
-            
-            heli_frame_back.addChild(heli_frame);
-            heli_frame_back.addChild(heli_rear_blade);
-            heli_frame_back.addChild(heli_top_blade);
-            
-            // Helicopter 3
-            var heli_frame_back = game.add.sprite(300, 550, 'helicopter', 'heli_frame_back');
-            var heli_frame = game.add.sprite(-73, -15, 'helicopter', 'heli_frame');
-            var heli_rear_blade = game.add.sprite(-62, 12, 'helicopter', 'heli_rear_blade_spin');
-            var heli_top_blade = game.add.sprite(-59, -8, 'helicopter', 'heli_top_blade_spin1');
-            heli_top_blade.animations.add('top_blade', Phaser.Animation.generateFrameNames('heli_top_blade_spin', 1, 3), 40, true, false);
-            heli_top_blade.animations.play('top_blade');
-            
-            heli_frame_back.addChild(heli_frame);
-            heli_frame_back.addChild(heli_rear_blade);
-            heli_frame_back.addChild(heli_top_blade);
-            heli_frame_back.scale.setTo(2);
+            var heli1 = game.add.sprite(100, 100, 'heli_cg', 'heli_cg_still');
+            heli1.scale.setTo(2);
+            var heli2 = game.add.sprite(100, 300, 'heli_cg', 'heli_cg_still');
+            heli2.scale.setTo(2);
+            heli2.animations.add('heli_cg_fly', Phaser.Animation.generateFrameNames('heli_cg_spin', 1, 4), 10, true, false);
+            heli2.animations.play('heli_cg_fly');
+            var heli3 = game.add.sprite(100, 500, 'heli_cg', 'heli_cg_still');
+            heli3.scale.setTo(2);
+            heli3.animations.add('heli_cg_fly', Phaser.Animation.generateFrameNames('heli_cg_spin', 1, 4), 40, true, false);
+            heli3.animations.play('heli_cg_fly');
         },
         
         update: function() {
-            if (game.input.keyboard.createCursorKeys().right.isDown) {
-                this.heli_frame_back.x++;
-            }
+            
         }
     };
 };
+})();
