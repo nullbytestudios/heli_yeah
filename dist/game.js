@@ -35,7 +35,78 @@ module.exports = function(game, Play) {
     };
 };
 })();
-},{"./preloader.js":6}],2:[function(require,module,exports){
+},{"./preloader.js":7}],2:[function(require,module,exports){
+/**
+ * Helicopter control object
+ * 
+ * @param Phaser game
+ * @param Sprite sprite
+ */
+module.exports = function (game) {
+    
+    var Helicopter = function(x, y) {
+        Phaser.Sprite.call(this, game, x, y, 'heli_cg');
+        
+        // Set event handlers
+        this.keys = game.input.keyboard.createCursorKeys();
+        this.acceleration = 0.5;
+        this.speed_x = 0;
+        this.speed_y = 0;
+        this.max_speed_x = 20;
+        this.max_speed_y = 10;
+        this.velocities = {
+            right:0.1,
+            left:0.1,
+            up:0.1,
+            down:0.05
+        };
+    };
+    
+    Helicopter.prototype = Object.create(Phaser.Sprite.prototype);
+    Helicopter.prototype.constructor = Helicopter;
+    
+    Helicopter.prototype.update = function() {
+        if (this.keys.right.isDown) {
+            this.x += this.move('right');
+        } else if (this.keys.left.isDown) {
+            this.x -= this.move('left');
+        }
+        
+        if (this.keys.up.isDown) {
+            this.y -= this.move('up');
+        } else if (this.keys.down.isDown) {
+            this.y += this.move('down');
+        }
+    };
+    
+    Helicopter.prototype.move = function(direction) {
+        var speed = 0;
+        
+        switch (direction) {
+            case 'left':
+            case 'down':
+                speed = Math.max(
+                    this.velocities[direction] + (this.acceleration * this.speed_y),
+                    this.max_speed_y
+                );
+                this.speed_y = speed;
+                break;
+            case 'right':
+            case 'up':
+                speed = Math.max(
+                    this.velocities[direction] + (this.acceleration * this.speed_x),
+                    this.max_speed_x
+                );
+                this.speed_x = speed;
+                break;
+        }
+        
+        return speed;
+    };
+    
+    return Helicopter;
+};
+},{}],3:[function(require,module,exports){
 /**
  * Player control object
  * 
@@ -104,7 +175,7 @@ module.exports = function (game) {
     
     return Player;
 };
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 /**
  * Plays the game.
  * 
@@ -115,11 +186,11 @@ module.exports = function (game) {
   'use strict';
 module.exports = function(game, Play) {
     var Player = require('./entities/player.js')(game);
+    var Helicopter = require('./entities/helicopter.js')(game);
     
     Play.GameManager = function(game) {
         this.levels = {};
         this.player = null;
-        this.heli_frame_back
     };
     
     Play.GameManager.prototype = {
@@ -136,6 +207,10 @@ module.exports = function(game, Play) {
             // Load level data
             this.levels = JSON.parse(game.cache.getText('levels'));
             
+            this.helicopter = new Helicopter(200, 200);
+            game.add.existing(this.helicopter);
+            //this.helicopter.anchor.setTo(0.5, 1);
+            /*
             // Create the player
             this.player = new Player(this.levels.level1.player_start.x, this.levels.level1.player_start.y);
             this.player.anchor.setTo(0.5, 1);
@@ -145,8 +220,10 @@ module.exports = function(game, Play) {
             this.player.anchor.setTo(0.5, 1);
             this.player.scale.setTo(2);
             game.add.existing(this.player);
+            */
             
             
+            /*
             var heli1 = game.add.sprite(100, 100, 'heli_cg', 'heli_cg_still');
             heli1.scale.setTo(2);
             var heli2 = game.add.sprite(100, 300, 'heli_cg', 'heli_cg_still');
@@ -157,6 +234,7 @@ module.exports = function(game, Play) {
             heli3.scale.setTo(2);
             heli3.animations.add('heli_cg_fly', Phaser.Animation.generateFrameNames('heli_cg_spin', 1, 4), 40, true, false);
             heli3.animations.play('heli_cg_fly');
+            */
         },
         
         update: function() {
@@ -165,7 +243,7 @@ module.exports = function(game, Play) {
     };
 };
 })();
-},{"./entities/player.js":2}],4:[function(require,module,exports){
+},{"./entities/helicopter.js":2,"./entities/player.js":3}],5:[function(require,module,exports){
 /**
  * Displays the logos at the start of the game and enters the Main Menu.
  * 
@@ -221,7 +299,7 @@ module.exports = function(game, Play) {
     };
 };
 })();
-},{"./main_menu.js":5}],5:[function(require,module,exports){
+},{"./main_menu.js":6}],6:[function(require,module,exports){
 /**
  * Displays the main menu.
  * 
@@ -266,7 +344,7 @@ module.exports = function(game, Play) {
     };
 };
 })();
-},{"./game_manager.js":3}],6:[function(require,module,exports){
+},{"./game_manager.js":4}],7:[function(require,module,exports){
 /**
  * Displays the preloader and heads into the logo intro.
  * 
@@ -312,7 +390,7 @@ module.exports = function(game, Play) {
     };
 };
 })();
-},{"./logos_intro.js":4}],7:[function(require,module,exports){
+},{"./logos_intro.js":5}],8:[function(require,module,exports){
 window.onload = function()
 {
     var game = new Phaser.Game(960, 640, Phaser.AUTO, 'game', null, false);
@@ -324,4 +402,4 @@ window.onload = function()
     game.state.start('launch');
 };
 
-},{"./boot.js":1}]},{},[7]);
+},{"./boot.js":1}]},{},[8]);

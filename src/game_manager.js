@@ -8,11 +8,11 @@
   'use strict';
 module.exports = function(game, Play) {
     var Player = require('./entities/player.js')(game);
+    var Helicopter = require('./entities/helicopter.js')(game);
     
     Play.GameManager = function(game) {
         this.levels = {};
         this.player = null;
-        this.heli_frame_back
     };
     
     Play.GameManager.prototype = {
@@ -29,6 +29,10 @@ module.exports = function(game, Play) {
             // Load level data
             this.levels = JSON.parse(game.cache.getText('levels'));
             
+            this.helicopter = new Helicopter(200, 200);
+            game.add.existing(this.helicopter);
+            //this.helicopter.anchor.setTo(0.5, 1);
+            /*
             // Create the player
             this.player = new Player(this.levels.level1.player_start.x, this.levels.level1.player_start.y);
             this.player.anchor.setTo(0.5, 1);
@@ -38,8 +42,10 @@ module.exports = function(game, Play) {
             this.player.anchor.setTo(0.5, 1);
             this.player.scale.setTo(2);
             game.add.existing(this.player);
+            */
             
             
+            /*
             var heli1 = game.add.sprite(100, 100, 'heli_cg', 'heli_cg_still');
             heli1.scale.setTo(2);
             var heli2 = game.add.sprite(100, 300, 'heli_cg', 'heli_cg_still');
@@ -50,6 +56,7 @@ module.exports = function(game, Play) {
             heli3.scale.setTo(2);
             heli3.animations.add('heli_cg_fly', Phaser.Animation.generateFrameNames('heli_cg_spin', 1, 4), 40, true, false);
             heli3.animations.play('heli_cg_fly');
+            */
         },
         
         update: function() {
