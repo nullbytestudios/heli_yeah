@@ -22,6 +22,9 @@ module.exports = function (game) {
             up:0.1,
             down:0.05
         };
+        
+        this.animations.add('heli_cg_fly', Phaser.Animation.generateFrameNames('heli_cg_spin', 1, 4), 40, true, false);
+        this.animations.play('heli_cg_fly');
     };
     
     Helicopter.prototype = Object.create(Phaser.Sprite.prototype);
