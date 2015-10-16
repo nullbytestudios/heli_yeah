@@ -22,6 +22,7 @@ module.exports = function(game, Play) {
     Play.GameManager = function(game) {
         this.levels = {};
         this.helicopter = null;
+        this.rocks = null;
         this.bg = {};
         this.invisible_walls = {
             left:80,
@@ -37,6 +38,8 @@ module.exports = function(game, Play) {
             this.load.text('levels', 'assets/data/levels.json');
             this.load.audio('helicopter_flying', ['assets/audio/sounds/helicopter_flying.mp3']);
             this.load.atlasJSONArray('heli_cg', 'assets/sprites/entities/heli/heli_cg.png', 'assets/sprites/entities/heli/heli_cg.json');
+            this.load.atlasJSONArray('rock', 'assets/sprites/entities/rock/rock.png', 'assets/sprites/entities/rock/rock.json');
+            this.load.atlasJSONArray('bg', 'assets/sprites/backgrounds/background.png', 'assets/sprites/backgrounds/background.json');
             this.load.atlasJSONArray('bg', 'assets/sprites/backgrounds/background.png', 'assets/sprites/backgrounds/background.json');
         },
         
@@ -53,7 +56,7 @@ module.exports = function(game, Play) {
             this.bg = game.add.group();
             this.bg.enableBody = true;
             this.bg.add(this.add.tileSprite(0, game.height - 32,  game.width, 32, 'bg', 'bottom'));
-            this.bg.add(this.add.tileSprite(0, 0, game.width, 32, 'bg', 'top'));
+            //this.bg.add(this.add.tileSprite(0, 0, game.width, 32, 'bg', 'top'));
             this.bg.add(this.add.tileSprite(0, 32, game.width, game.height - 64, 'bg', 'background'));
             
             var heli = new Helicopter(200, 200);
@@ -83,10 +86,27 @@ module.exports = function(game, Play) {
             this.helicopter.body.maxVelocity.setTo(200, 200);
             this.helicopter.body.drag.setTo(200, 200);
             this.helicopter.body.angularDrag = 20;
+            this.helicopter.body.mass = 2;
             
             this.helicopter.fly();
             
             this.cursors = game.input.keyboard.createCursorKeys();
+            
+            this.rocks = game.add.group();
+            this.rocks.enableBody = true;
+            game.physics.arcade.enable([this.rocks, this.bg, this.helicopter], true);
+            
+            for (var i = 0; i < 10; i++) {
+                //var rock_sprite = game.add.sprite(game.rnd.integerInRange(0, game.width), game.rnd.integerInRange(1, game.height) * -32, 'rock');
+                //var rock_sprite = game.add.sprite(32, 32 + i*32, 'rock');
+                var rock = this.rocks.create(game.rnd.integerInRange(0, game.width), game.rnd.integerInRange(1, game.height) * -1, 'rock', 'rock1');
+                
+                rock.body.collideWorldBounds = false;
+                rock.body.mass = 3;
+                rock.body.gravity.x = game.rnd.integerInRange(-50, 50);
+                rock.body.gravity.y = game.rnd.integerInRange(0, 200) + 100;
+                rock.body.bounce.set(0);
+            }
         },
         
         update: function() {
@@ -95,6 +115,9 @@ module.exports = function(game, Play) {
                 // Move the helicopter back slightly to avoid getting stuck in the background
                 helicopter.body.velocity.y *= -0.1;
             });
+            
+            //game.physics.arcade.collide(this.rocks, this.bg);
+            game.physics.arcade.collide(this.rocks, this.helicopter);
             
             this.flyHelicopter();
             this.scrollBackground();
