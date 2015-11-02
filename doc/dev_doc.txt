@@ -1,0 +1,58 @@
+Heli_yeah
+
+######## 
+
+http://stackoverflow.com/questions/22115400/why-do-we-need-to-install-gulp-globally-and-locally
+
+2:05 PM - amegilla: npm is just package manager, similar to pip for python
+
+1:58 PM - MaStEr~X: under node_modules/ should be browserify, gulp, merge-stream, phaser, vinyl-source-stream
+
+2:11 PM - MaStEr~X: gulp builds the source, browserify allows you to separate javascript you write by allowing you to include files from different files, which javascript can't do natively. vinyl-source-stream and merge-stream are kinda dependencies on browserify that facilitate merging the other modules together
+
+######## 
+Ubuntu14.04
+
+npm install -g nodejs
+npm http GET https://registry.npmjs.org/node
+npm http 304 https://registry.npmjs.org/node
+npm WARN deprecated node@0.0.0: To update or install node, go to http://nodejs.org/
+node@0.0.0 /usr/local/lib/node_modules/node
+
+
+######## install dependencies
+
+apt-get install -y npm
+apt-get install -y nodejs
+ln -s /usr/bin/nodejs /usr/bin/node
+
+#install globally
+npm install -g gulp
+npm install -g browserify
+npm install -g merge-stream
+npm install -g phaser
+npm install -g vinyl-source-stream
+
+#install locally
+cd /home/dannyluo/Documents/code/heli_yeah
+npm install gulp
+npm install browserify
+npm install merge-stream
+npm install phaser
+npm install viny-source-stream
+
+
+######## build
+cd /home/dannyluo/Documents/code/heli_yeah
+gulp build
+[14:25:27] Using gulpfile ~/Documents/code/heli_yeah/gulpfile.js
+[14:25:27] Starting 'build'...
+[14:25:27] Finished 'build' after 117 ms
+
+######## set up webserver
+
+ls /var/www
+vi /etc/apache2/sites-enabled/000-default.conf
+mv /home/dannyluo/Documents/code/heli_yeah/dist /var/www/html/heli_yeah
+ln -s /var/www/html/heli_yeah /home/dannyluo/Documents/code/heli_yeah/dist 
+service apache2 restart

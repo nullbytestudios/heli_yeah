@@ -35,7 +35,7 @@ module.exports = function(game, Play) {
     };
 };
 })();
-},{"./preloader.js":6}],2:[function(require,module,exports){
+},{"./preloader.js":7}],2:[function(require,module,exports){
 /**
  * Helicopter control object
  * 
@@ -66,6 +66,18 @@ module.exports = function (game) {
     return Helicopter;
 };
 },{}],3:[function(require,module,exports){
+window.onload = function()
+{
+    var game = new Phaser.Game(960, 640, Phaser.AUTO, 'game', null, false);
+    var Play = {};
+    
+    require('./boot.js')(game, Play);
+    
+    game.state.add('launch', Play.Launch);
+    game.state.start('launch');
+};
+
+},{"./boot.js":1}],4:[function(require,module,exports){
 /**
  * Plays the game.
  * 
@@ -242,7 +254,7 @@ module.exports = function(game, Play) {
     };
 };
 })();
-},{"./entities/helicopter.js":2}],4:[function(require,module,exports){
+},{"./entities/helicopter.js":2}],5:[function(require,module,exports){
 /**
  * Displays the logos at the start of the game and enters the Main Menu.
  * 
@@ -298,7 +310,7 @@ module.exports = function(game, Play) {
     };
 };
 })();
-},{"./main_menu.js":5}],5:[function(require,module,exports){
+},{"./main_menu.js":6}],6:[function(require,module,exports){
 /**
  * Displays the main menu.
  * 
@@ -343,7 +355,7 @@ module.exports = function(game, Play) {
     };
 };
 })();
-},{"./game_manager.js":3}],6:[function(require,module,exports){
+},{"./game_manager.js":4}],7:[function(require,module,exports){
 /**
  * Displays the preloader and heads into the logo intro.
  * 
@@ -389,16 +401,4 @@ module.exports = function(game, Play) {
     };
 };
 })();
-},{"./logos_intro.js":4}],7:[function(require,module,exports){
-window.onload = function()
-{
-    var game = new Phaser.Game(960, 640, Phaser.AUTO, 'game', null, false);
-    var Play = {};
-    
-    require('./boot.js')(game, Play);
-    
-    game.state.add('launch', Play.Launch);
-    game.state.start('launch');
-};
-
-},{"./boot.js":1}]},{},[7]);
+},{"./logos_intro.js":5}]},{},[3]);
